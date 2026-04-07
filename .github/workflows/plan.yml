@@ -1,4 +1,4 @@
-name: Plan
+name: Terraform Plan and Apply
 
 on:
   push:
@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   plan:
+    name: Terraform Plan
     runs-on: ubuntu-latest
     environment: dev
 
@@ -44,3 +45,32 @@ jobs:
         id: plan
         run: terraform plan -no-color -input=false
         continue-on-error: true
+
+  apply:
+    name: "Terraform Apply"
+    needs: plan
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: dev
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.0"
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -input=false

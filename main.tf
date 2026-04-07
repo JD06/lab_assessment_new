@@ -60,3 +60,20 @@ resource "aws_subnet" "private_2" {
     Name = "private-subnet-2"
   }
 }
+
+resource "aws_eip" "nat" {
+  domain = "vpc"
+}
+
+resource "aws_nat_gateway" "main" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public_1.id # Must be in a public subnet
+
+  tags = { Name = "main-nat" }
+}
+
+resource "aws_route" "private_nat" {
+  route_table_id         = aws_vpc.main.default_route_table_id # Assuming private uses default
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.main.id
+}
