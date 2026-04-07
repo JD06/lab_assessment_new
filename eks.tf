@@ -10,6 +10,21 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
   cluster_endpoint_public_access           = true
 
+  access_entries = {
+    admin_user = {
+      # Replace with your actual IAM ARN (found via 'aws sts get-caller-identity')
+      principal_arn     = "arn:aws:iam::713860847243:user/temp"
+      policy_associations = {
+        admin = {
+          policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+          access_scope = {
+            type = "cluster"
+          }
+        }
+      }
+    }
+  }
+
   # Managed Node Groups configuration
   eks_managed_node_groups = {
     general = {
