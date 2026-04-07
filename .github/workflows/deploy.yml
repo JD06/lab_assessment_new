@@ -1,4 +1,4 @@
-name: Plan
+name: Deploy
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  plan:
+  deploy:
     runs-on: ubuntu-latest
     environment: dev
 
@@ -44,3 +44,6 @@ jobs:
         id: plan
         run: terraform plan -no-color -input=false
         continue-on-error: true
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -input=false
