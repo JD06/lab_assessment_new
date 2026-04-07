@@ -56,3 +56,14 @@ To run manually:
 * Once you are able to get the nodes, apply the deployment.yml file
 * `kubectl apply -f deployment.yml`
 * Image i have build in my local and pushed to dockerhub
+
+**Check the deployment and service**
+
+1. `kubectl get deployments -n python-app-space`
+2. `kubectl get svc -n python-app-space`
+
+Accessing the application after forwarding the traffic
+
+`kubectl port-forward svc/ip-checker-service 5000:80 -n python-app-space`
+
+![Alt Text](assets/app.png)
