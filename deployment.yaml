@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: python-app-space
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-ip-deployment
+  namespace: python-app-space
+  labels:
+    app: ip-checker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ip-checker
+  template:
+    metadata:
+      labels:
+        app: ip-checker
+    spec:
+      containers:
+      - name: python-ip-container
+        image: jaydeep06/ip-checker:tagname
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ip-checker-service
+  namespace: python-app-space
+spec:
+  selector:
+    app: ip-checker
+  ports:
+    - protocol: TCP
+      port: 80         
+      targetPort: 5000
+  type: NodePort  
