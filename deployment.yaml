@@ -20,9 +20,11 @@ spec:
       labels:
         app: ip-checker
     spec:
+      # imagePullSecrets:
+      #   - name: dockerhub-key
       containers:
       - name: python-ip-container
-        image: jaydeep06/ip-checker:tagname
+        image: jaydeep06/python-ip-app:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
