@@ -20,12 +20,23 @@ spec:
       labels:
         app: ip-checker
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       # imagePullSecrets:
       #   - name: dockerhub-key
       containers:
       - name: python-ip-container
         image: jaydeep06/python-ip-app:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false # Set to true only if your app doesn't write logs/temp files
+          capabilities:
+            drop:
+              - ALL
         ports:
         - containerPort: 5000
 ---
